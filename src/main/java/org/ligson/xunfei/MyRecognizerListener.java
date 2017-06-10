@@ -17,6 +17,7 @@ public class MyRecognizerListener implements RecognizerListener {
     //isLast等于true时会话结束。
     public void onResult(RecognizerResult results, boolean isLast){
         System.out.println(results.getResultString());
+        System.out.println("------");
     }
     //会话发生错误回调接口
     public void onError(SpeechError error) {
