@@ -16,7 +16,7 @@ public class MyRecognizerListener implements RecognizerListener {
     //关于解析Json的代码可参见MscDemo中JsonParser类；
     //isLast等于true时会话结束。
     public void onResult(RecognizerResult results, boolean isLast){
-        System.out.println(results);
+        System.out.println(results.getResultString());
     }
     //会话发生错误回调接口
     public void onError(SpeechError error) {
