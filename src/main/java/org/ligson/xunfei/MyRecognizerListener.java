@@ -1,23 +1,38 @@
 package org.ligson.xunfei;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.iflytek.cloud.speech.RecognizerListener;
 import com.iflytek.cloud.speech.RecognizerResult;
 import com.iflytek.cloud.speech.SpeechError;
+import org.ligson.xunfei.listener.ReceiveTextListener;
+import org.ligson.xunfei.vo.RecognizerResultVo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ligson on 17-6-10.
  */
 //听写监听器
 public class MyRecognizerListener implements RecognizerListener {
-
+    private List<RecognizerResultVo> resultVos = new ArrayList<>();
+    private ReceiveTextListener receiveTextListener = new ReceiveTextListener();
 
     //听写结果回调接口(返回Json格式结果，用户可参见附录)；
     //一般情况下会通过onResults接口多次返回结果，完整的识别内容是多次结果的累加；
     //关于解析Json的代码可参见MscDemo中JsonParser类；
     //isLast等于true时会话结束。
     public void onResult(RecognizerResult results, boolean isLast){
-        System.out.println(results.getResultString());
-        System.out.println("------");
+        RecognizerResultVo recognizerResultVo = JSONObject.toJavaObject(JSON.parseObject(results.getResultString()), RecognizerResultVo.class);
+        resultVos.add(recognizerResultVo);
+        if(isLast){
+            StringBuilder builder = new StringBuilder();
+            for(RecognizerResultVo resultVo:resultVos){
+                builder.append(resultVo.getResult());
+            }
+            receiveTextListener.onReceive(builder.toString());
+        }
     }
     //会话发生错误回调接口
     public void onError(SpeechError error) {
