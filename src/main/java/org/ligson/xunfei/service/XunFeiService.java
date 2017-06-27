@@ -43,7 +43,7 @@ public class XunFeiService {
 
         synthesizer = SpeechSynthesizer.createSynthesizer();
         //2.合成参数设置,详见《MSC Reference Manual》SpeechSynthesizer 类
-        synthesizer.setParameter(SpeechConstant.VOICE_NAME, "xiaoyan");//设置发音人
+        //synthesizer.setParameter(SpeechConstant.VOICE_NAME, "xiaoyan");//设置发音人
         synthesizer.setParameter(SpeechConstant.SPEED, "50");//设置语速
         synthesizer.setParameter(SpeechConstant.VOLUME, "100");//设置音量,范围 0~100
         //设置合成音频保存位置(可自定义保存位置),保存在“./tts_test.pcm”
@@ -61,12 +61,15 @@ public class XunFeiService {
 
 
     public void recognizer() {
-        logger.debug("开始识别");
+        if (recognizer.isListening()) {
+            recognizer.cancel();
+            recognizer.stopListening();
+        }
+        logger.debug("开始识别:{}", recognizer.isListening());
         recognizer.startListening(recognizerListener);
-       /* if (exit) {
-            System.exit(0);
-        } else {
-            recognizer();
-        }*/
+    }
+
+    public void stopRecognizer() {
+        recognizer.stopListening();
     }
 }

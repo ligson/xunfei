@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.iflytek.cloud.speech.RecognizerListener;
 import com.iflytek.cloud.speech.RecognizerResult;
 import com.iflytek.cloud.speech.SpeechError;
+import org.ligson.xunfei.service.XunFeiService;
 import org.ligson.xunfei.vo.RecognizerResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ public class MyRecognizerListener implements RecognizerListener {
     private static Logger logger = LoggerFactory.getLogger(MyRecognizerListener.class);
     private List<RecognizerResultVo> resultVos = new ArrayList<>();
     private ReceiveTextListener receiveTextListener = new ReceiveTextListener();
+    private static XunFeiService xunFeiService = XunFeiService.getInstance();
 
     //听写结果回调接口(返回Json格式结果，用户可参见附录)；
     //一般情况下会通过onResults接口多次返回结果，完整的识别内容是多次结果的累加；
@@ -41,6 +43,11 @@ public class MyRecognizerListener implements RecognizerListener {
     //会话发生错误回调接口
     public void onError(SpeechError error) {
         logger.error("语音识别错误:{}", error.getErrorDescription(true)); //获取错误码描述
+        if (error.getErrorCode() == 20999) {
+
+            xunFeiService.stopRecognizer();
+            xunFeiService.recognizer();
+        }
     }
 
     //开始录音
